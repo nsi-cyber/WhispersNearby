@@ -1,11 +1,11 @@
 package com.nsicyber.whispersnearby.presentation.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,7 @@ import com.nsicyber.whispersnearby.data.remote.ChatMessage
 import com.nsicyber.whispersnearby.utils.MessageEncryptor
 import com.nsicyber.whispersnearby.utils.getContrastingTextColor
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatBubble(
@@ -32,6 +34,9 @@ fun ChatBubble(
     val backgroundColor = Color(message.color)
     val textColor = Color(getContrastingTextColor(message.color))
 
+
+    Box {
+        Text(message.emoji, Modifier.align(if (isUser) Alignment.TopEnd else Alignment.TopStart))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,8 +53,9 @@ fun ChatBubble(
                             bottomStart = 20.dp
                         )
                     )
-                    .background(backgroundColor, RoundedCornerShape(8.dp)).combinedClickable(
-                        onClick = {  },
+                    .background(backgroundColor, RoundedCornerShape(8.dp))
+                    .combinedClickable(
+                        onClick = { },
                         onLongClick = { onLongPress(message) }
                     )
                     .padding(8.dp)
@@ -62,5 +68,7 @@ fun ChatBubble(
                 )
             }
         }
+    }
+
 
 }

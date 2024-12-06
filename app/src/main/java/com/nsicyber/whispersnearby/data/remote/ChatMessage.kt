@@ -12,6 +12,7 @@ data class ChatMessage(
     val deviceId: String = "",
     val secretCode: String = "",
     val reportedBy: List<String> = listOf(),
-    val color: Int = Color.BLACK
+    val color: Int = Color.BLACK,
+    val emoji: String = "😐",
 
 )

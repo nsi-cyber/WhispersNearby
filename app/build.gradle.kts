@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.nsicyber.whispersnearby"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nsicyber.whispersnearby"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.firebase.config.ktx)
     implementation(libs.google.firebase.firestore.ktx)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.vision.common)
+    implementation(libs.androidx.camera.view)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -91,7 +94,24 @@ dependencies {
     implementation(libs.androidx.startup.runtime)
     implementation(libs.lottie.compose)
     implementation(kotlin("reflect"))
-    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
-    implementation("com.github.imperiumlabs:GeoFirestore-Android:v1.5.0")
+    implementation (libs.accompanist.permissions)
+    implementation(libs.geofirestore.android)
+    implementation(libs.face.detection)
+   // implementation(libs.play.services.mlkit.face.detection)
+  //  implementation(libs.play.services.base) // Genel Play Services
+   // implementation(libs.play.services.tflite.java) // Genel Play Services
+
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+  //  implementation(libs.androidx.camera.video)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
+    implementation("com.google.android.gms:play-services-gcm:17.0.0")
+   // implementation("com.google.android.gms:play-services:17.0.0")
+
+    implementation("org.tensorflow:tensorflow-lite:2.11.0")
+//    implementation("org.tensorflow:tensorflow-lite-gpu:2.11.0")
+    implementation("com.google.mlkit:face-detection:16.1.7")
 
 }

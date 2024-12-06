@@ -1,5 +1,6 @@
 package com.nsicyber.whispersnearby
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -36,6 +37,7 @@ import com.nsicyber.whispersnearby.presentation.chatScreen.ChatScreen
 import com.nsicyber.whispersnearby.presentation.mainScreen.MainScreen
 import com.nsicyber.whispersnearby.utils.Constants
 import com.nsicyber.whispersnearby.utils.LocationTracker
+import com.nsicyber.whispersnearby.utils.checkAndRequestCameraPermission
 import com.nsicyber.whispersnearby.utils.checkAndRequestLocationPermission
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,14 +45,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @Composable
 fun NavigationGraph(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
+    activity: Activity,
     navController: NavHostController = rememberNavController(),
     startDestination: String = Constants.MAIN_SCREEN,
     navActions: NavigationActions = remember(navController) {
         NavigationActions(navController)
     },
 ) {
-    val locationTracker = remember { LocationTracker(context) }
+    val locationTracker = remember { LocationTracker(activity.applicationContext) }
     val location = remember { mutableStateOf<Location?>(null) }
 
 
@@ -101,7 +103,7 @@ fun NavigationGraph(
             }
 
             composable(route = Constants.GLOBAL_CHAT) {
-                ChatScreen(
+                ChatScreen(activity = activity,
                     location = location.value, onBackClick = { navActions.popBackStack() }
                 )
             }
@@ -112,7 +114,7 @@ fun NavigationGraph(
                     type = NavType.StringType
                 })
             ) {
-                ChatScreen(
+                ChatScreen(activity = activity,
                     location = location.value,
                     secretCode = it.arguments?.getString("secretCode"),
                     onBackClick = { navActions.popBackStack() }
@@ -169,12 +171,18 @@ class MainActivity : ComponentActivity() {
             val context = this
             var hasPermission by remember { mutableStateOf(false) }
             val navController = rememberNavController()
+
+            checkAndRequestCameraPermission(
+                activity = context,
+                onPermissionGranted = { hasPermission = true },
+                onPermissionDenied = { /* Permission denied */ }
+            )
             checkAndRequestLocationPermission(
                 activity = context,
                 onPermissionGranted = { hasPermission = true },
                 onPermissionDenied = { /* Permission denied */ }
             )
-            NavigationGraph()
+            NavigationGraph(activity = this)
         }
     }
 

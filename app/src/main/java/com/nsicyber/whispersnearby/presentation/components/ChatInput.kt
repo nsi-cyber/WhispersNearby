@@ -89,8 +89,9 @@ fun ChatInput(
                     )
                 },
                 textStyle = TextStyle(color = Color.Black), // Yazı rengi
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                ).copy(
+                    //containerColor = Color.Transparent,
                     cursorColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,

@@ -1,29 +1,35 @@
 [versions]
+accompanistPermissions = "0.32.0"
 accompanistSwiperefresh = "0.35.1-alpha"
 agp = "8.3.2"
 coilCompose = "2.6.0"
 compiler = "1.1.1"
 datastorePreferences = "1.1.1"
-firebaseBom = "33.1.2"
-firebaseMessaging = "24.0.0"
+faceDetection = "16.1.7"
+firebaseBom = "33.7.0"
+firebaseMessaging = "24.1.0"
+geofirestoreAndroid = "v1.5.0"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 hiltNavigationComposeVersion = "1.2.0"
 kotlin = "2.0.0"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxCoroutinesCore = "1.8.0"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
-composeBom = "2024.06.00"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+composeBom = "2024.11.00"
 hilt = "2.51.1"
 lottieCompose = "5.2.0"
+playServicesBase = "18.5.0"
+playServicesMlkitFaceDetection = "17.1.0"
+playServicesTfliteJava = "16.3.0"
 retrofit2 = "2.11.0"
 okhttp3 = "4.12.0"
-navigationRuntimeKtx = "2.7.7"
-navigationCompose = "2.7.7"
+navigationRuntimeKtx = "2.8.4"
+navigationCompose = "2.8.4"
 roomCommon = "2.6.1"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
@@ -31,16 +37,20 @@ startupRuntime = "1.1.1"
 workRuntimeKtx = "2.9.0"
 hiltWork = "1.2.0"
 firebaseDatabaseKtx = "21.0.0"
-firebaseAuthKtx = "23.0.0"
-firebaseFirestoreKtx = "25.0.0"
-playServicesMeasurementApi = "22.0.2"
+firebaseAuthKtx = "23.1.0"
+firebaseFirestoreKtx = "25.1.1"
+playServicesMeasurementApi = "22.1.2"
 appcompat = "1.7.0"
 material = "1.12.0"
 firebaseConfigKtx = "22.0.1"
 firebaseFirestoreKtxVersion = "25.1.1"
 playServicesLocation = "21.3.0"
+cameraCore = "1.4.0"
+visionCommon = "17.3.0"
+cameraView = "1.4.0"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -49,8 +59,10 @@ androidx-startup-runtime = { module = "androidx.startup:startup-runtime", versio
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 compiler = { module = "android.arch.persistence.room:compiler", version.ref = "compiler" }
+face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
+geofirestore-android = { module = "com.github.imperiumlabs:GeoFirestore-Android", version.ref = "geofirestoreAndroid" }
 hilt-android-compiler-v2481 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android-v2481 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
@@ -71,6 +83,9 @@ dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref 
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
+play-services-mlkit-face-detection = { module = "com.google.android.gms:play-services-mlkit-face-detection", version.ref = "playServicesMlkitFaceDetection" }
+play-services-tflite-java = { module = "com.google.android.gms:play-services-tflite-java", version.ref = "playServicesTfliteJava" }
 retrofit2-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
 retrofit2-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
 okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
@@ -89,6 +104,13 @@ material = { group = "com.google.android.material", name = "material", version.r
 firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx", version.ref = "firebaseConfigKtx" }
 google-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+vision-common = { group = "com.google.mlkit", name = "vision-common", version.ref = "visionCommon" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraView" }
+androidx-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraView" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraView" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -7,6 +7,8 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        maven("https://maven.google.com/") // Google Maven deposu açıkça belirtiliyor
+
         mavenCentral()
         gradlePluginPortal()
     }
@@ -14,8 +16,10 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven("https://jitpack.io")
         google()
+        maven ("https://maven.google.com/")
+        maven("https://jitpack.io")
+
         mavenCentral()
     }
 }
