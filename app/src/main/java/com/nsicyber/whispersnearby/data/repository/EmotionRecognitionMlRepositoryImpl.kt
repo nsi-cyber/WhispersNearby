@@ -3,7 +3,6 @@ package com.nsicyber.whispersnearby.data.repository
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetector
-import com.nsicyber.whispersnearby.EmotionEnumClass
 import com.nsicyber.whispersnearby.domain.repository.EmotionRecognitionMlRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

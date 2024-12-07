@@ -79,7 +79,6 @@ class ChatRepositoryImpl @Inject constructor(
                             if (message.secretCode == secretCode) {
                                 messageList.add(message)
                                 messageList.sortByDescending { it.timestamp }
-
                                 trySend(messageList.toList())
                             }
                         } ?: run {

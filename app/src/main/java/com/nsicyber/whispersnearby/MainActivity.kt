@@ -1,7 +1,6 @@
 package com.nsicyber.whispersnearby
 
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -23,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -44,6 +42,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @Composable
 fun NavigationGraph(
+    hasCameraPermission: Boolean, hasLocationPermission: Boolean,
     modifier: Modifier = Modifier,
     activity: Activity,
     navController: NavHostController = rememberNavController(),
@@ -94,29 +93,41 @@ fun NavigationGraph(
 
 
             composable(route = Constants.MAIN_SCREEN) {
-                MainScreen(location = location.value,
-                    onSecretRoom = {
-                        navActions.navigateToSecretChat(it)
+                MainScreen(hasCameraPermission = hasCameraPermission,
+                    hasLocationPermission = hasLocationPermission,
+                    location = location.value,
+                    onSecretRoom = { code, hasCamera ->
+                        navActions.navigateToSecretChat(code, hasCamera)
                     },
-                    onGlobalRoom = { navActions.navigateToGlobalChat() }
+                    onGlobalRoom = { navActions.navigateToGlobalChat(it) }
                 )
             }
 
-            composable(route = Constants.GLOBAL_CHAT) {
+            composable(
+                route = "${Constants.GLOBAL_CHAT}/{hasCamera}",
+                arguments = listOf(navArgument("hasCamera") {
+                    type = NavType.BoolType
+                }),
+            ) {
                 ChatScreen(activity = activity,
+                    hasCamera = it.arguments?.getBoolean("hasCamera") ?: false,
+
                     location = location.value, onBackClick = { navActions.popBackStack() }
                 )
             }
 
             composable(
-                route = "${Constants.SECRET_CHAT}/{secretCode}",
+                route = "${Constants.SECRET_CHAT}/{secretCode}/{hasCamera}",
                 arguments = listOf(navArgument("secretCode") {
                     type = NavType.StringType
+                }, navArgument("hasCamera") {
+                    type = NavType.BoolType
                 })
             ) {
                 ChatScreen(activity = activity,
                     location = location.value,
                     secretCode = it.arguments?.getString("secretCode"),
+                    hasCamera = it.arguments?.getBoolean("hasCamera") ?: false,
                     onBackClick = { navActions.popBackStack() }
                 )
 
@@ -137,16 +148,16 @@ fun NavOptionsBuilder.popUpToTop(navController: NavController, inclusive: Boolea
 
 class NavigationActions(private val navController: NavHostController) {
 
-    fun navigateToGlobalChat() {
-        navController.navigate(Constants.GLOBAL_CHAT) {
+    fun navigateToGlobalChat(hasCamera: Boolean) {
+        navController.navigate("${Constants.GLOBAL_CHAT}/${hasCamera}") {
             popUpToTop(navController)
         }
     }
 
 
-    fun navigateToSecretChat(secretCode: String) {
+    fun navigateToSecretChat(secretCode: String, hasCamera: Boolean) {
         navController.navigate(
-            "${Constants.SECRET_CHAT}/${secretCode}"
+            "${Constants.SECRET_CHAT}/${secretCode}/${hasCamera}"
         ) {
             popUpToTop(navController)
         }
@@ -169,20 +180,25 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val context = this
-            var hasPermission by remember { mutableStateOf(false) }
+            var hasCameraPermission by remember { mutableStateOf(false) }
+            var hasLocationPermission by remember { mutableStateOf(false) }
             val navController = rememberNavController()
 
             checkAndRequestCameraPermission(
                 activity = context,
-                onPermissionGranted = { hasPermission = true },
+                onPermissionGranted = { hasCameraPermission = true },
                 onPermissionDenied = { /* Permission denied */ }
             )
             checkAndRequestLocationPermission(
                 activity = context,
-                onPermissionGranted = { hasPermission = true },
+                onPermissionGranted = { hasLocationPermission = true },
                 onPermissionDenied = { /* Permission denied */ }
             )
-            NavigationGraph(activity = this)
+            NavigationGraph(
+                hasCameraPermission = hasCameraPermission,
+                hasLocationPermission = hasLocationPermission,
+                activity = this
+            )
         }
     }
 

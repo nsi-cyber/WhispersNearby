@@ -9,11 +9,11 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +39,7 @@ import com.nsicyber.whispersnearby.utils.DeviceIdProvider
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
+    hasCamera: Boolean,
     viewModel: ChatViewModel = hiltViewModel(),
     activity: Activity,
     location: Location?,
@@ -49,6 +50,7 @@ fun ChatScreen(
     val deviceId = DeviceIdProvider.getDeviceId(activity.applicationContext)
     val deviceColor = DeviceColorProvider.getDeviceColor(activity.applicationContext)
     val lifecycleOwner = LocalLifecycleOwner.current
+    val listState = rememberLazyListState()
 
 
     val controller = remember {
@@ -59,10 +61,11 @@ fun ChatScreen(
             cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
             bindToLifecycle(lifecycleOwner)
             setEnabledUseCases(
-                CameraController.IMAGE_CAPTURE or
-                        CameraController.IMAGE_ANALYSIS,
-            )
+                CameraController.IMAGE_CAPTURE )
         }
+    }
+    LaunchedEffect(lifecycleOwner) {
+        controller.bindToLifecycle(lifecycleOwner)
     }
 
 
@@ -73,7 +76,12 @@ fun ChatScreen(
         mutableStateOf(ChatMessage())
     }
 
+    LaunchedEffect(uiState.messages) {
 
+        if (0!=listState.firstVisibleItemIndex) {
+            listState.animateScrollToItem(0)
+        }
+    }
     LaunchedEffect(location) {
         location.let { location ->
             viewModel.loadNearbyMessages(
@@ -105,11 +113,11 @@ fun ChatScreen(
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
 
-                LazyColumn(
+                LazyColumn(state = listState,
                     modifier = Modifier.weight(1f),
                     reverseLayout = true
                 ) {
-                    items(uiState.messages ?: listOf()) { message ->
+                    items(uiState.messages ?: listOf(), key = {it.id}) { message ->
                         ChatBubble(
                             message = message,
                             isUser = message.deviceId == deviceId,
@@ -123,7 +131,9 @@ fun ChatScreen(
 
                     item {
                         AndroidView(
-                            modifier = Modifier.alpha(0f).size(1.dp),
+                            modifier = Modifier
+                                .alpha(0f)
+                                .size(1.dp),
                             factory = {
                                 PreviewView(it).apply {
                                     this.controller = controller
@@ -142,28 +152,27 @@ fun ChatScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     onSend = { content ->
                         location.let { location ->
-                            viewModel.sendMessageWithImage(
-                                controller = controller,
-                                content = content,
-                                latitude = location?.latitude ?: 0.0,
-                                longitude = location?.longitude ?: 0.0,
-                                deviceId = deviceId,
-                                secretCode = secretCode,
-                                deviceColor = deviceColor
 
-                            )
-                            /*
+                            if (hasCamera)
+                                viewModel.sendMessageWithImage(
+                                    controller = controller,
+                                    content = content,
+                                    latitude = location?.latitude ?: 0.0,
+                                    longitude = location?.longitude ?: 0.0,
+                                    deviceId = deviceId,
+                                    secretCode = secretCode,
+                                    deviceColor = deviceColor
 
+                                )
+                            else
+                                viewModel.sendMessage(
+                                    content = content,
+                                    latitude = location?.latitude ?: 0.0,
+                                    longitude = location?.longitude ?: 0.0,
+                                    deviceId = deviceId,
+                                    secretCode = secretCode, deviceColor = deviceColor
+                                )
 
-                                                                                   viewModel.sendMessage(
-                                                                                       content = content,
-                                                                                       latitude = location?.latitude ?: 0.0,
-                                                                                       longitude = location?.longitude ?: 0.0,
-                                                                                       deviceId = deviceId,
-                                                                                       secretCode = secretCode, deviceColor = deviceColor
-                                                                                   )
-
-                                                        */
                         }
                     })
             }

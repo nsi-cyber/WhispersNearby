@@ -13,6 +13,6 @@ data class ChatMessage(
     val secretCode: String = "",
     val reportedBy: List<String> = listOf(),
     val color: Int = Color.BLACK,
-    val emoji: String = "😐",
+    val emoji: String = "",
 
 )

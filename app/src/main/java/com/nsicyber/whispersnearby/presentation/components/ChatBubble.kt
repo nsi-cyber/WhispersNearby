@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.nsicyber.whispersnearby.data.remote.ChatMessage
 import com.nsicyber.whispersnearby.utils.MessageEncryptor
 import com.nsicyber.whispersnearby.utils.getContrastingTextColor
@@ -35,12 +37,11 @@ fun ChatBubble(
     val textColor = Color(getContrastingTextColor(message.color))
 
 
-    Box {
-        Text(message.emoji, Modifier.align(if (isUser) Alignment.TopEnd else Alignment.TopStart))
+    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = 22.dp, vertical = 12.dp),
             horizontalArrangement = if (!isUser) Arrangement.Start else Arrangement.End
         ) {
             Box(
@@ -53,7 +54,7 @@ fun ChatBubble(
                             bottomStart = 20.dp
                         )
                     )
-                    .background(backgroundColor, RoundedCornerShape(8.dp))
+                    .background(backgroundColor)
                     .combinedClickable(
                         onClick = { },
                         onLongClick = { onLongPress(message) }
@@ -68,6 +69,12 @@ fun ChatBubble(
                 )
             }
         }
+        Text(
+            text = message.emoji,
+            style = TextStyle().copy(fontSize = 24.sp), modifier =
+            Modifier.align(if (isUser) Alignment.TopEnd else Alignment.TopStart)
+        )
+
     }
 
 

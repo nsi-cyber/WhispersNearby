@@ -15,7 +15,6 @@ import com.nsicyber.whispersnearby.data.remote.ChatMessage
 import com.nsicyber.whispersnearby.domain.repository.CameraRepository
 import com.nsicyber.whispersnearby.domain.useCase.DeleteAllMessagesUseCase
 import com.nsicyber.whispersnearby.domain.useCase.EmotionRecognitionMlUseCase
-import com.nsicyber.whispersnearby.domain.useCase.EmotionRecognitionUseCase
 import com.nsicyber.whispersnearby.domain.useCase.GetNearbyMessagesUseCase
 import com.nsicyber.whispersnearby.domain.useCase.ReportMessageUseCase
 import com.nsicyber.whispersnearby.domain.useCase.SendMessageUseCase
@@ -34,7 +33,6 @@ class ChatViewModel @Inject constructor(
     private val getNearbyMessagesUseCase: GetNearbyMessagesUseCase,
     private val deleteAllMessagesUseCase: DeleteAllMessagesUseCase,
     //  private val takePhotoUseCase: TakePhotoUseCase,
-    private val emotionRecognitionUseCase: EmotionRecognitionUseCase,
     private val emotionRecognitionMlUseCase: EmotionRecognitionMlUseCase,
     private val repository: CameraRepository
 ) : ViewModel() {
@@ -97,7 +95,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-
     @OptIn(ExperimentalGetImage::class)
     fun sendMessageWithImage(
         controller: LifecycleCameraController,
@@ -109,53 +106,66 @@ class ChatViewModel @Inject constructor(
         deviceColor: Int?
     ) {
         viewModelScope.launch {
+            repository.takePhoto(controller) { imageProxy ->
 
-            repository.takePhoto(controller) {
-                imageProxy ->
+                val emoji = "😐" // Varsayılan emoji
+
                 try {
+                    if (imageProxy != null) {
+                        val inputImage = InputImage.fromMediaImage(
+                            imageProxy.image!!,
+                            imageProxy.imageInfo.rotationDegrees
+                        )
 
-                    val inputImage = InputImage.fromMediaImage(
-                        imageProxy.image!!,
-                        imageProxy.imageInfo.rotationDegrees
-                    )
-                    viewModelScope.launch {
-                        emotionRecognitionMlUseCase(inputImage).collect { faceResult ->
-                            faceResult.fold(
-                                onSuccess = { emoji ->
+                        viewModelScope.launch {
+                            emotionRecognitionMlUseCase(inputImage).collect { faceResult ->
+                                faceResult.fold(
+                                    onSuccess = { detectedEmoji ->
+                                        sendMessageUseCase(ChatMessage(
+                                            content = MessageEncryptor.encryptMessage(content),
+                                            latitude = latitude,
+                                            longitude = longitude,
+                                            deviceId = deviceId,
+                                            timestamp = System.currentTimeMillis(),
+                                            secretCode = secretCode.orEmpty(),
+                                            color = deviceColor?:Color.BLACK,
+                                            emoji = detectedEmoji)
+                                        )
+                                    },
+                                    onFailure = {
+                                        Log.e("FaceDetection", "Failed to detect face.")
+                                        sendMessageUseCase(ChatMessage(
+                                            content = MessageEncryptor.encryptMessage(content),
+                                            latitude = latitude,
+                                            timestamp = System.currentTimeMillis(),
 
-                                    val encryptedContent =
-                                        MessageEncryptor.encryptMessage(content)
-                                    val chatMessage = ChatMessage(
-                                        content = encryptedContent,
-                                        timestamp = System.currentTimeMillis(),
-                                        latitude = latitude,
-                                        longitude = longitude,
-                                        deviceId = deviceId,
-                                        secretCode = secretCode.orEmpty(),
-                                        color = deviceColor ?: Color.BLACK,
-                                        emoji = emoji
-                                    )
-                                    sendMessageUseCase(chatMessage)
-                                },
-                                onFailure = { faceError ->
-                                    Log.e(
-                                        "FaceDetection",
-                                        "Failed to detect face: ${faceError.message}"
-                                    )
-                                }
-                            )
+                                            longitude = longitude,
+                                            deviceId = deviceId,
+                                            secretCode = secretCode.orEmpty(),
+                                            color = deviceColor?:Color.BLACK,
+                                            emoji = emoji)
+                                        )
+                                    }
+                                )
+                            }
                         }
+                    } else {
+                        sendMessage(
+                            content = content,
+                            latitude = latitude,
+                            longitude = longitude,
+                            deviceId = deviceId,
+                            secretCode = secretCode.orEmpty(),
+                            deviceColor = deviceColor,
+                        )
                     }
                 } finally {
-                    imageProxy.close()
+                    imageProxy?.close()
                 }
             }
-
-
         }
-
-
     }
+
 
     /*
         @OptIn(ExperimentalGetImage::class)

@@ -6,18 +6,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.nsicyber.whispersnearby.data.repository.CameraRepositoryImpl
 import com.nsicyber.whispersnearby.data.repository.ChatRepositoryImpl
 import com.nsicyber.whispersnearby.data.repository.EmotionRecognitionMlRepositoryImpl
-import com.nsicyber.whispersnearby.data.repository.EmotionRecognitionRepositoryImpl
- import com.nsicyber.whispersnearby.domain.repository.CameraRepository
 import com.nsicyber.whispersnearby.domain.repository.ChatRepository
 import com.nsicyber.whispersnearby.domain.repository.EmotionRecognitionMlRepository
-import com.nsicyber.whispersnearby.domain.repository.EmotionRecognitionRepository
 import com.nsicyber.whispersnearby.domain.useCase.EmotionRecognitionMlUseCase
-import com.nsicyber.whispersnearby.domain.useCase.EmotionRecognitionUseCase
 import com.nsicyber.whispersnearby.utils.LocationUtils
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,8 +21,6 @@ import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.channels.FileChannel
 import javax.inject.Singleton
-
-
 
 
 @Module
@@ -66,15 +58,7 @@ object AppModule {
     @Singleton
     fun provideContext(@ApplicationContext context: Context): Context = context
 
-    @Provides
-    @Singleton
-    fun provideAssetManager(context: Context): AssetManager = context.assets
 
-    @Provides
-    @Singleton
-    fun provideEmotionRecognitionRepository(
-        interpreter: Interpreter
-    ): EmotionRecognitionRepository = EmotionRecognitionRepositoryImpl(interpreter)
 
 
 
