@@ -26,14 +26,13 @@ class CameraRepositoryImpl @Inject constructor(
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
                     Log.e("CameraCapture", "onCaptureSuccess ")
-
-                    onImage(image) // Başarılı ise imageProxy gönder
+                    onImage(image)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
                     super.onError(exception)
                     Log.e("CameraCapture", "Failed to capture photo: ${exception.message}")
-                    onImage(null) // Hata varsa null döndür
+                    onImage(null)
                 }
             }
         )

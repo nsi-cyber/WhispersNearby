@@ -19,16 +19,14 @@ class EmotionRecognitionMlRepositoryImpl(
         try {
             val faces = faceDetector.process(inputImage).await()
             val face = faces.firstOrNull()
-
-                emit(Result.success(analyzeFaceToEmoji(face)))
-
+            emit(Result.success(analyzeFaceToEmoji(face)))
         } catch (e: Exception) {
             emit(Result.failure(e))
         }
     }.flowOn(Dispatchers.IO)
 
     private fun analyzeFaceToEmoji(face: Face?): String {
-        if(face==null) return "😐"
+        if (face == null) return "😐"
         val smilingProbability = face.smilingProbability ?: 0f
         val leftEyeOpenProbability = face.leftEyeOpenProbability ?: 0f
         val rightEyeOpenProbability = face.rightEyeOpenProbability ?: 0f
